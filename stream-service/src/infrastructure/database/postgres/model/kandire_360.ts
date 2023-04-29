@@ -115,7 +115,7 @@ class Kandire360Model extends Model {
     }
 }
 
-const kandire360ModelSequelise = sequelize.define('Kandire360',{
+const kandire360ModelSequelize = sequelize.define('Kandire360Model',{
     ID: {
         type: DataTypes.STRING,
         field: 'id',
@@ -338,13 +338,14 @@ const kandire360ModelSequelise = sequelize.define('Kandire360',{
     },
 }, {
     schema: 'register',
-    tableName: 'pib_municipios',
+    tableName: 'pib_municipos',
     timestamps: false,
     freezeTableName: true,
-    underscored: true
+    underscored: true,
+    
 })
 
 export {
     Kandire360Model,
-    kandire360ModelSequelise
+    kandire360ModelSequelize
 }

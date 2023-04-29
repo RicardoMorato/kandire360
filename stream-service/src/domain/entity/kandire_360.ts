@@ -111,6 +111,30 @@ class Kandire360Entity {
     }
 }
 
+class EstadoEntity {
+    public siglaUF: String
+    public codUF: number
+    public nomeUF: string
+
+    constructor(siglaUF: String, codUF: number, nomeUF: string) {
+        this.siglaUF = siglaUF
+        this.codUF = codUF
+        this.nomeUF = nomeUF
+    }
+}
+
+class MunicipioEntity {
+    public codMunicipio: number
+    public nomeMunicipio: string 
+
+    constructor(codMunicipio: number, nomeMunicipio: string) {
+        this.codMunicipio = codMunicipio
+        this.nomeMunicipio = nomeMunicipio
+    }
+}
+
 export {
-    Kandire360Entity
+    Kandire360Entity,
+    EstadoEntity,
+    MunicipioEntity
 }

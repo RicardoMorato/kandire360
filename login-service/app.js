@@ -28,6 +28,12 @@ app.post('/register', async (req, res) => {
       res.status(400).send('All input is required');
     }
 
+    const regex = /[a-z0-9]+@[a-z]+.[a-z]{2,3}/;
+
+    if (!(regex.test(email))) {
+      return res.status(400).send('Email is not valid');
+    }
+
     const oldUser = await db.getData('/users');
     const validateEmail = oldUser.filter((e) => e.email === req.body.email)[0];
 

@@ -3,6 +3,7 @@ import { Select } from "antd";
 
 import { initMap } from "@/utils";
 import { GeonameCities, AntdSelectOptions } from "@/types/cities";
+import RealTimeChart from "@/components/RealTimeChart";
 
 function Mapa() {
   const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
@@ -10,14 +11,20 @@ function Mapa() {
   );
 
   const fetchData = async () => {
-    const data: GeonameCities = await (await fetch("/api/stateCities")).json();
+    try {
+      const data: GeonameCities = await (
+        await fetch("/api/stateCities")
+      ).json();
 
-    const formattedData = data.geonames.map((cityData) => ({
-      value: cityData.name,
-      label: cityData.name,
-    }));
+      const formattedData = data.geonames.map((cityData) => ({
+        value: cityData.name,
+        label: cityData.name,
+      }));
 
-    setCitiesData(formattedData);
+      setCitiesData(formattedData);
+    } catch (err) {
+      console.log("FETCH FAILED: ", err);
+    }
   };
 
   const onChange = (value: string) => {
@@ -646,6 +653,8 @@ function Mapa() {
           options={citiesData}
         />
       )}
+
+      {citiesData && <RealTimeChart />}
     </div>
   );
 }

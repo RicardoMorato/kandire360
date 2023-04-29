@@ -19,6 +19,10 @@ $red: #F7254C;
 	display: none;
 }
 
+.ant-select-arrow {
+	display: none !important;
+}
+
 .ant-select-selector {
 	width: 300px !important;
 }

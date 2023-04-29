@@ -1,80 +1,19 @@
-import { useEffect } from "react";
-import styles from "@/styles/Home.module.css";
+import { useEffect, useState } from "react";
+import { initMap } from "@/utils";
+import { GeonameCities } from "@/types/cities";
 
 function Mapa() {
+  const [citiesData, setCitiesData] = useState<null | GeonameCities>(null);
+
+  const fetchData = async () => {
+    const data: GeonameCities = await (await fetch("/api/stateCities")).json();
+
+    setCitiesData(data);
+    console.log(data.geonames[0]);
+  };
+
   useEffect(() => {
-    const states = document.querySelectorAll<HTMLDivElement>("#map .state");
-
-    states.forEach((state) => {
-      state.addEventListener("click", () => {
-        const estado = state.getAttribute("data-state");
-        const box_estado = `#box_${estado}`;
-
-        console.log(`.state_${estado} .shape`);
-
-        // Reseta o estado e seu label para a cor padrão
-        document
-          .querySelectorAll<HTMLDivElement>(".state .label_icon_state")
-          .forEach((label) => {
-            label.style.fill = "#666";
-          });
-        document
-          .querySelectorAll<HTMLDivElement>(".state .shape")
-          .forEach((shape) => {
-            shape.style.fill = "#ddd";
-          });
-
-        // Colore o estado selecionado
-        document.querySelector<HTMLDivElement>(
-          `#state_${estado} .label_icon_state`
-        )!.style.fill = "#FFF";
-        document.querySelector<HTMLDivElement>(
-          `#state_${estado} .shape`
-        )!.style.fill = "#fd7132";
-
-        //Verifica se o cadastro de contato do estado existe
-        const box = document.querySelector<HTMLDivElement>(box_estado);
-        if (!box) {
-          console.log("Não existe");
-        } else {
-          document
-            .querySelectorAll<HTMLDivElement>(".parca .estado")
-            .forEach((parca) => {
-              parca.classList.add("some");
-              parca.style.opacity = "0";
-              parca.style.visibility = "hidden";
-            });
-
-          box.classList.remove("some");
-          box.style.opacity = "1";
-          box.style.visibility = "visible";
-        }
-      });
-    });
-
-    states.forEach((state) => {
-      state.addEventListener("click", (e) => {
-        e.preventDefault();
-      });
-    });
-
-    const selector = document.querySelector<HTMLSelectElement>("#seletory");
-    if (selector) {
-      selector.addEventListener("change", () => {
-        document
-          .querySelectorAll<HTMLDivElement>(".parca .estado")
-          .forEach((parca) => {
-            parca.style.opacity = "0";
-            parca.style.visibility = "hidden";
-          });
-        document.querySelector<HTMLDivElement>(
-          `#box_${selector.value}`
-        )!.style.opacity = "1";
-        document.querySelector<HTMLDivElement>(
-          `#box_${selector.value}`
-        )!.style.visibility = "visible";
-      });
-    }
+    initMap(fetchData, () => setCitiesData(null));
   }, []);
 
   return (
@@ -83,10 +22,8 @@ function Mapa() {
         <svg
           id="map"
           xmlns="http://www.w3.org/2000/svg"
-          // xmlns:xlink="http://www.w3.org/1999/xlink"
           width="460"
           height="465"
-          // style="display: inline;"
         >
           <g className="model-davi">
             <desc>Brasil</desc>
@@ -678,7 +615,16 @@ function Mapa() {
         </svg>
       </div>
 
-      <div className="parca">
+      {!citiesData && <p id="loading">Carregando informações...</p>}
+      {citiesData && (
+        <div id="cidades">
+          {citiesData.geonames.map((cityData) => (
+            <p key={cityData.geonameId}>{cityData.name}</p>
+          ))}
+        </div>
+      )}
+
+      {/* <div className="parca">
         <select name="select" id="seletory">
           <option value="mg" data-stado="mg">
             {" "}
@@ -996,7 +942,7 @@ function Mapa() {
             <li>Lorem ipsum Tocantins</li>
           </ul>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

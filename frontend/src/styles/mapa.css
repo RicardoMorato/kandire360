@@ -15,6 +15,14 @@ $red: #F7254C;
 	transition: $args;
 }
 
+#loading {
+	display: none;
+}
+
+#map p {
+	color: rgb(102, 102, 102);
+}
+
 /* MAPA */
 .box-mapa{
 	position: relative;
@@ -23,12 +31,8 @@ $red: #F7254C;
 	padding: 20px 0 0 15px;
 }
 #map {
-	display: none;
-	transform: scale(1.2);
 	transform: scale(1);
-	display: table !important;
-	margin: 0 auto;
-	float: left;
+	display: flex;
 }
 #map .state {
     cursor: pointer;

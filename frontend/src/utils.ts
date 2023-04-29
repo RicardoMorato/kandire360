@@ -5,6 +5,8 @@ const initMap = (fetchStateData: Function, reloadState: Function) => {
     state.addEventListener("click", async (e) => {
       reloadState();
       e.preventDefault();
+      document.querySelector<HTMLDivElement>("#map")?.classList.add("move-map");
+
       const estado = state.getAttribute("data-state");
       const box_estado = `#box_${estado}`;
 

@@ -1,15 +1,31 @@
 import { useEffect, useState } from "react";
+import { Select } from "antd";
+
 import { initMap } from "@/utils";
-import { GeonameCities } from "@/types/cities";
+import { GeonameCities, AntdSelectOptions } from "@/types/cities";
 
 function Mapa() {
-  const [citiesData, setCitiesData] = useState<null | GeonameCities>(null);
+  const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
+    null
+  );
 
   const fetchData = async () => {
     const data: GeonameCities = await (await fetch("/api/stateCities")).json();
 
-    setCitiesData(data);
-    console.log(data.geonames[0]);
+    const formattedData = data.geonames.map((cityData) => ({
+      value: cityData.name,
+      label: cityData.name,
+    }));
+
+    setCitiesData(formattedData);
+  };
+
+  const onChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+
+  const onSearch = (value: string) => {
+    console.log("search:", value);
   };
 
   useEffect(() => {
@@ -616,333 +632,20 @@ function Mapa() {
       </div>
 
       {!citiesData && <p id="loading">Carregando informações...</p>}
+
       {citiesData && (
-        <div id="cidades">
-          {citiesData.geonames.map((cityData) => (
-            <p key={cityData.geonameId}>{cityData.name}</p>
-          ))}
-        </div>
+        <Select
+          showSearch
+          placeholder="Selecione uma cidade"
+          optionFilterProp="children"
+          onChange={onChange}
+          onSearch={onSearch}
+          filterOption={(input, option) =>
+            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+          }
+          options={citiesData}
+        />
       )}
-
-      {/* <div className="parca">
-        <select name="select" id="seletory">
-          <option value="mg" data-stado="mg">
-            {" "}
-            Minas Gerais
-          </option>
-          <option value="ac" data-stado="ac">
-            {" "}
-            Acre
-          </option>
-          <option value="al" data-stado="al">
-            {" "}
-            Alagoas
-          </option>
-          <option value="ap" data-stado="ap">
-            {" "}
-            Amapá
-          </option>
-          <option value="am" data-stado="am">
-            {" "}
-            Amazonas
-          </option>
-          <option value="ba" data-stado="ba">
-            {" "}
-            Bahia
-          </option>
-          <option value="ce" data-stado="ce">
-            {" "}
-            Ceará
-          </option>
-          <option value="df" data-stado="df">
-            {" "}
-            Distrito Federal
-          </option>
-          <option value="es" data-stado="es">
-            {" "}
-            Espírito Santo
-          </option>
-          <option value="go" data-stado="go">
-            {" "}
-            Goiás
-          </option>
-          <option value="ma" data-stado="ma">
-            {" "}
-            Maranhão
-          </option>
-          <option value="mt" data-stado="mt">
-            {" "}
-            Mato Grosso
-          </option>
-          <option value="ms" data-stado="ms">
-            {" "}
-            Mato Grosso do Sul
-          </option>
-          <option value="pa" data-stado="pa">
-            {" "}
-            Pará
-          </option>
-          <option value="pb" data-stado="pb">
-            {" "}
-            Paraíba
-          </option>
-          <option value="pr" data-stado="pr">
-            {" "}
-            Paraná
-          </option>
-          <option value="pe" data-stado="pe">
-            {" "}
-            Pernambuco
-          </option>
-          <option value="pi" data-stado="pi">
-            {" "}
-            Piauí
-          </option>
-          <option value="rj" data-stado="rj">
-            {" "}
-            Rio de Janeiro
-          </option>
-          <option value="rn" data-stado="rn">
-            {" "}
-            Rio Grande do Norte
-          </option>
-          <option value="rs" data-stado="rs">
-            {" "}
-            Rio Grande do Sul
-          </option>
-          <option value="ro" data-stado="ro">
-            {" "}
-            Rondônia
-          </option>
-          <option value="rr" data-stado="rr">
-            {" "}
-            Roraima
-          </option>
-          <option value="sc" data-stado="sc">
-            {" "}
-            Santa Catarina
-          </option>
-          <option value="se" data-stado="se">
-            {" "}
-            Sergipe
-          </option>
-          <option value="sp" data-stado="sp">
-            {" "}
-            São Paulo
-          </option>
-          <option value="to" data-stado="to">
-            {" "}
-            Tocantins
-          </option>
-        </select>
-
-        <div id="box_mg" data-info="mg" className="estado">
-          <h3>Minas Gerais</h3>
-          <ul>
-            <li>Lorem ipsum Minas Gerais</li>
-            <li>Lorem ipsum Minas Gerais</li>
-            <li>Lorem ipsum Minas Gerais</li>
-            <li>
-              <a
-                href="https:>//www.davidsonsilva.com.br"
-                target="_blank"
-                rel="noopener"
-              >
-                External link
-              </a>
-            </li>
-            <li>
-              <a href="davidsonsilva.com.br" download>
-                Download file
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="box_sp" data-info="sp" className="estado">
-          <h3>São Paulo</h3>
-          <ul>
-            <li>Lorem ipsum São Paulo</li>
-            <li>Lorem ipsum São Paulo</li>
-          </ul>
-        </div>
-        <div id="box_rj" data-info="rj" className="estado">
-          <h3>Rio de Janeiro</h3>
-          <ul>
-            <li>Lorem ipsum Rio de Janeiro</li>
-            <li>Lorem ipsum Rio de Janeiro</li>
-          </ul>
-        </div>
-        <div id="box_ac" data-info="ac" className="estado">
-          <h3>Acre</h3>
-          <ul>
-            <li>Lorem ipsum Acre</li>
-            <li>Lorem ipsum Acre</li>
-            <li>Lorem ipsum </li>
-            <li>Lorem ipsum Acre</li>
-          </ul>
-        </div>
-        <div id="box_al" data-info="al" className="estado">
-          <h3>Alagoas</h3>
-          <ul>
-            <li>Lorem ipsum Alagoas</li>
-            <li>Lorem ipsum Alagoas</li>
-          </ul>
-        </div>
-        <div id="box_ap" data-info="ap" className="estado">
-          <h3>Amapá</h3>
-          <ul>
-            <li>Lorem ipsum Amapá</li>
-            <li>Lorem ipsum Amapá</li>
-          </ul>
-        </div>
-        <div id="box_am" data-info="am" className="estado">
-          <h3>Amazonas</h3>
-          <ul>
-            <li>Lorem ipsum Amazonas</li>
-            <li>Lorem ipsum Amazonas</li>
-          </ul>
-        </div>
-        <div id="box_ba" data-info="ba" className="estado">
-          <h3>Bahia</h3>
-          <ul>
-            <li>Lorem ipsum Bahia</li>
-            <li>Lorem ipsum Bahia</li>
-          </ul>
-        </div>
-        <div id="box_ce" data-info="ce" className="estado">
-          <h3>Ceará</h3>
-          <ul>
-            <li>Lorem ipsum Ceará</li>
-            <li>Lorem ipsum Ceará</li>
-          </ul>
-        </div>
-        <div id="box_df" data-info="df" className="estado">
-          <h3>Distrito Federal</h3>
-          <ul>
-            <li>Lorem ipsum Distrito Federal</li>
-            <li>Lorem ipsum Distrito Federal</li>
-          </ul>
-        </div>
-        <div id="box_es" data-info="es" className="estado">
-          <h3>Espírito Santo</h3>
-          <ul>
-            <li>Lorem ipsum Espírito Santo</li>
-            <li>Lorem ipsum Espírito Santo</li>
-          </ul>
-        </div>
-        <div id="box_go" data-info="go" className="estado">
-          <h3>Goiás</h3>
-          <ul>
-            <li>Lorem ipsum Goiás</li>
-            <li>Lorem ipsum Goiás</li>
-          </ul>
-        </div>
-        <div id="box_ma" data-info="ma" className="estado">
-          <h3>Maranhão</h3>
-          <ul>
-            <li>Lorem ipsum Maranhão</li>
-            <li>Lorem ipsum Maranhão</li>
-          </ul>
-        </div>
-        <div id="box_mt" data-info="mt" className="estado">
-          <h3>Mato Grosso</h3>
-          <ul>
-            <li>Lorem ipsum Mato Grosso</li>
-            <li>Lorem ipsum Mato Grosso</li>
-          </ul>
-        </div>
-        <div id="box_ms" data-info="ms" className="estado">
-          <h3>Mato Grosso do Sul</h3>
-          <ul>
-            <li>Lorem ipsum Mato Grosso do Sul</li>
-            <li>Lorem ipsum Mato Grosso do Sul</li>
-          </ul>
-        </div>
-        <div id="box_pa" data-info="pa" className="estado">
-          <h3>Pará</h3>
-          <ul>
-            <li>Lorem ipsum Pará</li>
-            <li>Lorem ipsum Pará</li>
-          </ul>
-        </div>
-        <div id="box_pb" data-info="pb" className="estado">
-          <h3>Paraíba</h3>
-          <ul>
-            <li>Lorem ipsum Paraíba</li>
-            <li>Lorem ipsum Paraíba</li>
-          </ul>
-        </div>
-        <div id="box_pr" data-info="pr" className="estado">
-          <h3>Paraná</h3>
-          <ul>
-            <li>Lorem ipsum Paraná</li>
-            <li>Lorem ipsum Paraná</li>
-          </ul>
-        </div>
-        <div id="box_pe" data-info="pe" className="estado">
-          <h3>Pernambuco</h3>
-          <ul>
-            <li>Lorem ipsum Pernambuco</li>
-            <li>Lorem ipsum Pernambuco</li>
-          </ul>
-        </div>
-        <div id="box_pi" data-info="pi" className="estado">
-          <h3>Piauí</h3>
-          <ul>
-            <li>Lorem ipsum Piauí</li>
-            <li>Lorem ipsum Piauí</li>
-          </ul>
-        </div>
-        <div id="box_rn" data-info="rn" className="estado">
-          <h3>Rio Grande do Norte</h3>
-          <ul>
-            <li>Lorem ipsum Rio Grande do Norte</li>
-            <li>Lorem ipsum Rio Grande do Norte</li>
-          </ul>
-        </div>
-        <div id="box_rs" data-info="rs" className="estado">
-          <h3>Rio Grande do Sul</h3>
-          <ul>
-            <li>Lorem ipsum Rio Grande do Sul</li>
-            <li>Lorem ipsum Rio Grande do Sul</li>
-          </ul>
-        </div>
-        <div id="box_ro" data-info="ro" className="estado">
-          <h3>Rondônia</h3>
-          <ul>
-            <li>Lorem ipsum Rondônia</li>
-            <li>Lorem ipsum Rondônia</li>
-          </ul>
-        </div>
-        <div id="box_rr" data-info="rr" className="estado">
-          <h3>Roraima</h3>
-          <ul>
-            <li>Lorem ipsum Roraima</li>
-            <li>Lorem ipsum Roraima</li>
-          </ul>
-        </div>
-        <div id="box_sc" data-info="sc" className="estado">
-          <h3>Santa Catarina</h3>
-          <ul>
-            <li>Lorem ipsum Santa Catarina</li>
-            <li>Lorem ipsum Santa Catarina</li>
-          </ul>
-        </div>
-        <div id="box_se" data-info="se" className="estado">
-          <h3>Sergipe</h3>
-          <ul>
-            <li>Lorem ipsum Sergipe</li>
-            <li>Lorem ipsum Sergipe</li>
-          </ul>
-        </div>
-        <div id="box_to" data-info="to" className="estado">
-          <h3>Tocantins</h3>
-          <ul>
-            <li>Lorem ipsum Tocantins</li>
-            <li>Lorem ipsum Tocantins</li>
-          </ul>
-        </div>
-      </div> */}
     </div>
   );
 }

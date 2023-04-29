@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>Kandire 360</title>
         <meta
           name="description"
           content="Um dashboard que lhe mostra o PIB de cidades do Brasil entre 2010 e 2019"

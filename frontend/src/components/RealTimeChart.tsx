@@ -10,9 +10,13 @@ interface ChartData {
   value: number;
 }
 
+interface RealTimeChartProps {
+  cityName: string;
+}
+
 let today = new Date();
 
-function RealTimeChart() {
+function RealTimeChart({ cityName = "" }: RealTimeChartProps) {
   const [chartData, setChartData] = useState([] as ChartData[]);
 
   useEffect(() => {
@@ -44,7 +48,7 @@ function RealTimeChart() {
       ]);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [cityName]);
 
   return (
     <ReactApexChart
@@ -70,6 +74,19 @@ function RealTimeChart() {
           toolbar: {
             show: false,
           },
+        },
+        dataLabels: {
+          enabled: true,
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        title: {
+          text: `Variação do PIB da cidade entre 2010 e 2019 (${cityName})`,
+          align: "left",
+        },
+        markers: {
+          size: 0,
         },
         xaxis: {
           categories: chartData.map((data) => data.time.toString()),

@@ -10,11 +10,15 @@ const { loginPackage } = grpcObject;
 const serverGRPC = new grpc.Server();
 serverGRPC.addService(loginPackage.Login.service, { login, authenticate });
 
-serverGRPC.bindAsync('0.0.0.0:4000', grpc.ServerCredentials.createInsecure(), () => serverGRPC.start());
+serverGRPC.bindAsync(
+  '0.0.0.0:4000',
+  grpc.ServerCredentials.createInsecure(),
+  () => serverGRPC.start(),
+);
 
 const server = http.createServer(app);
 
-server.listen(3000, () => {
+server.listen(8000, () => {
   // eslint-disable-next-line no-console
-  console.log(`Server running on port ${3000}`);
+  console.log(`Server running on port ${8000}`);
 });

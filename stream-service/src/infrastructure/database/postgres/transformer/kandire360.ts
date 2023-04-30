@@ -30,9 +30,9 @@ class Kandire360Transformer {
     }
 
     toMunicipioEntity(row: any): MunicipioEntity {
-        const { cod_municipio, nome_municipio } = row.dataValues
+        const { cod_municipio, nome_municipio, maxPib } = row.dataValues
 
-        return new MunicipioEntity(cod_municipio, nome_municipio)
+        return new MunicipioEntity(cod_municipio, nome_municipio, maxPib)
     }
 
     formatedMinVlaue(value: number) {

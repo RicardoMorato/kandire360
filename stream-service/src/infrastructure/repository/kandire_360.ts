@@ -36,11 +36,13 @@ class Kandire360Repository {
         const data = await kandire360ModelSequelize.findAll({
             attributes: [
                 ['cod_municipio', 'cod_municipio'],
-                ['nome_municipio', 'nome_municipio']
+                ['nome_municipio', 'nome_municipio'],
+                [Sequelize.fn('MAX', Sequelize.col('pib')), 'maxPib']
             ], where: {
                 ano: '2010',
                 cod_uf: codeUF
             },
+            group: ['cod_municipio', 'nome_municipio'],
             order: [
                 ['nome_municipio', 'ASC']
             ]

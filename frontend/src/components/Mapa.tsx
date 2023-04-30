@@ -6,6 +6,7 @@ import { GeonameCities, AntdSelectOptions } from "@/types/cities";
 import RealTimeChart from "@/components/RealTimeChart";
 
 function Mapa() {
+  const [selectedCity, setSelectedCity] = useState("");
   const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
     null
   );
@@ -23,20 +24,21 @@ function Mapa() {
 
       setCitiesData(formattedData);
     } catch (err) {
-      console.log("FETCH FAILED: ", err);
+      console.error("FETCH FAILED: ", err);
     }
   };
 
   const onChange = (value: string) => {
-    console.log(`selected ${value}`);
+    setSelectedCity(value);
   };
 
-  const onSearch = (value: string) => {
-    console.log("search:", value);
+  const resetStates = () => {
+    setCitiesData(null);
+    setSelectedCity("");
   };
 
   useEffect(() => {
-    initMap(fetchData, () => setCitiesData(null));
+    initMap(fetchData, resetStates);
   }, []);
 
   return (
@@ -646,7 +648,6 @@ function Mapa() {
           placeholder="Selecione uma cidade"
           optionFilterProp="children"
           onChange={onChange}
-          onSearch={onSearch}
           filterOption={(input, option) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
@@ -654,7 +655,7 @@ function Mapa() {
         />
       )}
 
-      {citiesData && <RealTimeChart />}
+      {citiesData && selectedCity && <RealTimeChart cityName={selectedCity} />}
     </div>
   );
 }

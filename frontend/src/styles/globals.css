@@ -34,10 +34,14 @@
     #00000080
   );
 
+  --default-blue: #1e88e5;
+  --slighter-blue: #1e88e54f;
+  --background-color: #1e88e50d;
   --callout-rgb: 238, 240, 241;
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+  --text-rgb: 102, 102, 102;
 }
 
 @media (prefers-color-scheme: dark) {

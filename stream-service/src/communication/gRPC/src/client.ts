@@ -1,10 +1,11 @@
-import  grpc from '@grpc/grpc-js';
-import protoLoader from '@grpc/proto-loader';
+import { loadPackageDefinition, credentials } from '@grpc/grpc-js';
+import { loadSync } from '@grpc/proto-loader';
 import { ProtoGrpcType } from '../proto/login';
+import path from 'path';
 
 const host = '0.0.0.0:4000';
-const packageDefinition = protoLoader.loadSync('./proto/login.proto');
-const proto = grpc.loadPackageDefinition(
+const packageDefinition = loadSync(path.resolve(__dirname, '../proto/login.proto'));
+const proto = loadPackageDefinition(
   packageDefinition
 ) as unknown as ProtoGrpcType;
 
@@ -14,7 +15,7 @@ class ClientGRPC {
   constructor() {
     this.client = new proto.loginPackage.Login(
       host,
-      grpc.credentials.createInsecure()
+      credentials.createInsecure()
     );
   }
 

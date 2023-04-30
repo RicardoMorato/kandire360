@@ -29,17 +29,16 @@ const ListMunicipiosByCodeUFController = async (req: Request, res: Response) => 
 const GetMunicipioDashboardByCodMunicipioAndAnoController = async (req: Request, res: Response) => {
     const repository = new Kandire360Repository()
 
-    const { codMunicipio, ano } = req.query
+    const { codMunicipio } = req.query
 
     let codMunicipioParse = 0
     let anoParse = 0
 
-    if (typeof codMunicipio === 'string' && typeof ano === 'string') {
+    if (typeof codMunicipio === 'string') {
         codMunicipioParse = parseInt(codMunicipio, 10)
-        anoParse = parseInt(ano, 10)
     }
 
-    return res.send(await repository.getMunicipioByCodMunicipio(codMunicipioParse, anoParse))
+    return res.send(await repository.getMunicipioByCodMunicipio(codMunicipioParse, 2010))
 }
 
 export {

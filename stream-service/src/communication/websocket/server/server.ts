@@ -6,6 +6,14 @@ const io = new Server();
 
 const PORT = 3000
 
+function timeIntervalAwait(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(async () => {
+            resolve(0)
+        }, ms)
+    })
+}
+
 function initWebSocketServer() {
     console.log(`Websocket Server on ${PORT}`)
 
@@ -20,12 +28,21 @@ function initWebSocketServer() {
 
         socket.on("kandire:payload", async (data) => {
             if (data) {
-                const { codMunicipio, ano } = data
+                const { codMunicipio } = data
                 const repository = new Kandire360Repository()
-                const response = await repository.getMunicipioByCodMunicipio(codMunicipio, ano)
-
+                let initial = 2010
+                const response: any = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
+                socket.emit('kandire:data', response)
                 if (response) {
-                    socket.emit("kandxire:data", response)
+                    const maxLoop = 10
+                    for (let index = 0; index < maxLoop; index++) {
+                        await timeIntervalAwait(5000)
+                        initial++
+                        const resp = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
+                        socket.emit('kandire:data', resp)
+                    }
+
+                    socket.emit("kandire:data", 'end-stream')
                 } else {
                     socket.emit("kandire:data", 'end-stream')
                 }

@@ -7,9 +7,9 @@ const host = '0.0.0.0:4000';
 const packageDefinition = loadSync(path.resolve(__dirname, '../proto/login.proto'));
 const proto = loadPackageDefinition(
   packageDefinition
-) as unknown as ProtoGrpcType;
+) as unknown as ProtoGrpcType
 
-class ClientGRPC { 
+class ClientGRPC {
   client: any;
 
   constructor() {
@@ -23,7 +23,7 @@ class ClientGRPC {
     this.client.authenticate({
       token
     }, (err: any, response: any) => {
-      console.log(response);
+      console.log(response)
     });
   }
 
@@ -31,7 +31,7 @@ class ClientGRPC {
     this.client.login({
       email
     }, (err: any, response: any) => {
-      console.log(response);
+      console.log(response)
     });
   }
 }

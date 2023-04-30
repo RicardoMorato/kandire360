@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package loginPackage;
+
+service Login {
+    rpc login(userData) returns (loginItem);
+    rpc authenticate(authenticationData) returns (loginItem);
+}
+
+message loginItem {
+    string email = 1;
+    string token = 2;
+    bool status = 3;
+}
+
+message userData {
+    string email = 1;
+}
+
+message authenticationData {
+    string token = 1;
+}

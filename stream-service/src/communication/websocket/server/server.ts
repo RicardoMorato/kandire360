@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { ClientGRPC } from '../../gRPC/src/client';
 
 const io = new Server();
 
@@ -6,6 +7,13 @@ const PORT = 3000
 
 function initWebSocketServer() {
     console.log(`Websocket Server on ${PORT}`)
+
+    /************ EXEMPLO **********************/
+    const grpc = new ClientGRPC();
+    grpc.doAuthentication('');
+    grpc.doLogin('');
+    /************ EXEMPLO **********************/
+
     io.on("connection", (socket) => {
         console.log(`socket ${socket.id} connected`)
 

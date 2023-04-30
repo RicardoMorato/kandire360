@@ -8,8 +8,6 @@ export default async function handler(
   try {
     const email = req.body.email;
 
-    console.log(email);
-
     const loginAttempt = await fetch("http://localhost:8000/register", {
       method: "POST",
       headers: {

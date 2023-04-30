@@ -126,9 +126,9 @@ class EstadoEntity {
 class MunicipioEntity {
     public codMunicipio: number
     public nomeMunicipio: string 
-    public maxPib: number
+    public maxPib: any
 
-    constructor(codMunicipio: number, nomeMunicipio: string, maxPib: number) {
+    constructor(codMunicipio: number, nomeMunicipio: string, maxPib: any) {
         this.codMunicipio = codMunicipio
         this.nomeMunicipio = nomeMunicipio
         this.maxPib = maxPib
@@ -137,9 +137,9 @@ class MunicipioEntity {
 
 class MunicipioDashboardEntity {
     public time: Date | string
-    public value: number
+    public value: any
 
-    constructor(time: Date | string, value: number) {
+    constructor(time: Date | string, value: any) {
         this.time = time
         this.value = value
     }

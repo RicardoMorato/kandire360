@@ -39,7 +39,6 @@ class Kandire360Repository {
                 ['nome_municipio', 'nome_municipio'],
                 [Sequelize.fn('MAX', Sequelize.col('pib')), 'maxPib']
             ], where: {
-                ano: '2010',
                 cod_uf: codeUF
             },
             group: ['cod_municipio', 'nome_municipio'],

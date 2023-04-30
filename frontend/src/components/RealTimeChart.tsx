@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { io } from "socket.io-client";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-
-// const socket = io("http://localhost:3333/", { reconnectionAttempts: 2 });
 
 interface ChartData {
   time: Date | string;

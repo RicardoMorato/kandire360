@@ -1,7 +1,8 @@
-import { Sequelize } from 'sequelize'
+import { Sequelize, QueryTypes } from 'sequelize'
 import { Kandire360Entity, MunicipioEntity, EstadoEntity, MunicipioDashboardEntity } from '../../domain/entity/kandire_360'
 import { Kandire360Model, kandire360ModelSequelize } from '../database/postgres/model/kandire_360'
 import { Kandire360Transformer } from '../database/postgres/transformer/kandire360'
+import { sequelize } from '../database/postgres/config/connect'
 
 class Kandire360Repository {
     async listAll(): Promise<Kandire360Entity[]> {
@@ -31,25 +32,21 @@ class Kandire360Repository {
         return data ? data.map((el: any) => transformer.toEstadoEntity(el)) : []
     }
 
-    async listMunicipiosByCodeUF(codeUF: number): Promise<MunicipioEntity[]> {
+    async listMunicipiosByCodeUF(codUF: number): Promise<MunicipioEntity[]> {
         const transformer = new Kandire360Transformer()
-        const data = await kandire360ModelSequelize.findAll({
-            attributes: [
-                ['cod_municipio', 'cod_municipio'],
-                ['nome_municipio', 'nome_municipio'],
-                [Sequelize.fn('MAX', Sequelize.col('pib')), 'maxPib']
-            ], where: {
-                cod_uf: codeUF
-            },
-            group: ['cod_municipio', 'nome_municipio'],
-            order: [
-                ['nome_municipio', 'ASC']
-            ]
-        })
+        const data = await sequelize.query(`
+            SELECT pm.cod_municipio, pm.nome_municipio, MAX(CAST(REPLACE(pm.pib, '.', '') AS NUMERIC)) AS "maxPib" 
+            FROM register.pib_municipos_tb pm
+            WHERE pm.cod_uf = :codUF
+            GROUP BY pm.nome_municipio, pm.cod_municipio
+            ORDER BY pm.nome_municipio
+            `, {
+            replacements: { codUF },
+            type: QueryTypes.SELECT
+        });
 
-        return data ? data.map((el: any) => transformer.toMunicipioEntity(el)): []
+        return data ? data.map((el: any) => transformer.toMunicipioEntity(el)) : []
     }
-
     async getMunicipioByCodMunicipio(codMunicipio: number, ano: number): Promise<MunicipioDashboardEntity> {
         const transformer = new Kandire360Transformer()
         const data = await kandire360ModelSequelize.findOne({
@@ -62,7 +59,7 @@ class Kandire360Repository {
             }
         })
 
-        return data ? transformer.toMunicipioDashboard(data): null
+        return data ? transformer.toMunicipioDashboard(data) : null
     }
 
 }

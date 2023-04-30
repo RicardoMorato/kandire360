@@ -66,6 +66,9 @@ function RealTimeChart({ cityName = "", data, maxRange }: RealTimeChartProps) {
         markers: {
           size: 0,
         },
+        tooltip: {
+          enabled: false,
+        },
         xaxis: {
           categories: data.map((data) =>
             new Date(data.time.toString()).getFullYear()

@@ -2,13 +2,28 @@ import { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
+import { useCookies } from "react-cookie";
+import { io } from "socket.io-client";
 import styles from "@/styles/Home.module.css";
 import Mapa from "@/components/Mapa";
-import { useCookies } from "react-cookie";
+
+const socket = io("http://localhost:3333/", { reconnectionAttempts: 2 });
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  socket.on("connect", () => {
+    socket.emit("kandire:payload", { codMunicipio: 2600054, ano: 2011 });
+
+    socket.on("kandire:data", (data) => {
+      console.log("rebendo...", data);
+      if (data === "end-stream") {
+        console.log("fechando conexao");
+        socket.close();
+      }
+    });
+  });
+
   const router = useRouter();
   const [cookies] = useCookies(["session"]);
 

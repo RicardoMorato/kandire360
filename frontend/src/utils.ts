@@ -111,4 +111,12 @@ const getCodUF = (nomeUF: string): number => {
   else return ufCods["PE"];
 };
 
-export { initMap, getCodUF };
+const messageHandler = (io, socket) => {
+  const createdMessage = (msg) => {
+    socket.broadcast.emit("newIncomingMessage", msg);
+  };
+
+  socket.on("createdMessage", createdMessage);
+};
+
+export { initMap, getCodUF, messageHandler };

@@ -35,9 +35,7 @@ const initMap = (fetchStateData: Function, reloadState: Function) => {
 
       //Verifica se o cadastro de contato do estado existe
       const box = document.querySelector<HTMLDivElement>(box_estado);
-      if (!box) {
-        console.log("Não existe");
-      } else {
+      if (box) {
         document
           .querySelectorAll<HTMLDivElement>(".parca .estado")
           .forEach((parca) => {
@@ -55,7 +53,7 @@ const initMap = (fetchStateData: Function, reloadState: Function) => {
         .querySelectorAll<HTMLParagraphElement>("#loading")
         .forEach((test) => (test.style.display = "block"));
 
-      await fetchStateData();
+      await fetchStateData(estado?.toLocaleUpperCase());
     });
   });
 
@@ -78,4 +76,39 @@ const initMap = (fetchStateData: Function, reloadState: Function) => {
   }
 };
 
-export { initMap };
+const getCodUF = (nomeUF: string): number => {
+  const ufCods = {
+    AC: 12,
+    AL: 27,
+    AP: 16,
+    AM: 13,
+    BA: 29,
+    CE: 23,
+    DF: 53,
+    ES: 32,
+    GO: 52,
+    MA: 21,
+    MT: 51,
+    MS: 50,
+    MG: 31,
+    PA: 15,
+    PB: 25,
+    PR: 41,
+    PE: 26,
+    PI: 22,
+    RJ: 33,
+    RN: 24,
+    RS: 43,
+    RO: 11,
+    RR: 14,
+    SC: 42,
+    SP: 35,
+    SE: 28,
+    TO: 17,
+  };
+
+  if (nomeUF in ufCods) return ufCods[nomeUF];
+  else return ufCods["PE"];
+};
+
+export { initMap, getCodUF };

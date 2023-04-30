@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Select } from "antd";
 
-import { initMap } from "@/utils";
-import { GeonameCities, AntdSelectOptions } from "@/types/cities";
+import { initMap, getCodUF } from "@/utils";
+import { AntdSelectOptions, CityData } from "@/types/cities";
 import RealTimeChart from "@/components/RealTimeChart";
 
 function Mapa() {
@@ -11,15 +11,17 @@ function Mapa() {
     null
   );
 
-  const fetchData = async () => {
+  const fetchData = async (state: string) => {
     try {
-      const data: GeonameCities = await (
-        await fetch("/api/stateCities")
+      const codUF = getCodUF(state);
+
+      const data: CityData[] = await (
+        await fetch(`/api/stateCities?codUf=${codUF}`)
       ).json();
 
-      const formattedData = data.geonames.map((cityData) => ({
-        value: cityData.name,
-        label: cityData.name,
+      const formattedData = data.map((cityData) => ({
+        value: cityData.codMunicipio,
+        label: cityData.nomeMunicipio,
       }));
 
       setCitiesData(formattedData);
@@ -28,8 +30,8 @@ function Mapa() {
     }
   };
 
-  const onChange = (value: string) => {
-    setSelectedCity(value);
+  const onChange = (value: number, city: AntdSelectOptions) => {
+    setSelectedCity(city.label);
   };
 
   const resetStates = () => {

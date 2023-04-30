@@ -1,18 +1,23 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  name: string;
-};
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  const citiesData = await fetch(
-    "https://www.geonames.org/childrenJSON?geonameId=3392268"
+  const { codUf } = req.query;
+
+  if (!codUf)
+    res.status(400).json({
+      error: "Please send the state code in the query",
+      missingParam: "codUf",
+    });
+
+  const ufCities = await fetch(
+    `http://localhost:8080/municipiosByCodUF?codUF=${codUf}`
   );
-  const citiesDataJson = await citiesData.json();
+
+  const citiesDataJson = await ufCities.json();
 
   res.status(200).json(citiesDataJson);
 }

@@ -67,7 +67,7 @@ class Kandire360Transformer {
                 return this.formatedMinVlaue(m)
             }
         }
-        const formatDate = `${map.dd()}/${map.mm()}/${map.aaaa} ${map.hh()}:${map.m()}`
+        const formatDate = `${map.aaaa}/${map.mm()}/${map.dd()}`
 
         return new MunicipioDashboardEntity(formatDate, pib)
     }

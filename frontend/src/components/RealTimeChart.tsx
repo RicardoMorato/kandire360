@@ -16,9 +16,10 @@ interface ChartData {
 interface RealTimeChartProps {
   cityName: string;
   data: ChartData[];
+  maxRange: number;
 }
 
-function RealTimeChart({ cityName = "", data }: RealTimeChartProps) {
+function RealTimeChart({ cityName = "", data, maxRange }: RealTimeChartProps) {
   return (
     <ReactApexChart
       type="line"
@@ -27,7 +28,11 @@ function RealTimeChart({ cityName = "", data }: RealTimeChartProps) {
       series={[
         {
           name: "PIB",
-          data: data.map((data) => data.value),
+          data: data.map((data) =>
+            data.value > 2_000_000
+              ? Math.round(data.value / 1_000_000)
+              : Math.round(data.value / 1000)
+          ),
         },
       ]}
       options={{
@@ -37,7 +42,7 @@ function RealTimeChart({ cityName = "", data }: RealTimeChartProps) {
             enabled: true,
             easing: "linear",
             dynamicAnimation: {
-              speed: 1000,
+              speed: 500,
             },
           },
           toolbar: {
@@ -54,14 +59,23 @@ function RealTimeChart({ cityName = "", data }: RealTimeChartProps) {
           text: `Variação do PIB da cidade entre 2010 e 2019 (${cityName})`,
           align: "left",
         },
+        subtitle: {
+          text: maxRange > 2_000_000 ? "Em milhões de R$" : "Em milhares de R$",
+          align: "left",
+        },
         markers: {
           size: 0,
         },
         xaxis: {
-          categories: data.map((data) => data.time.toString()),
+          categories: data.map((data) =>
+            new Date(data.time.toString()).getFullYear()
+          ),
         },
         yaxis: {
-          max: 1000,
+          max:
+            maxRange > 2_000_000
+              ? Math.round(maxRange / 1_000_000)
+              : Math.round(maxRange / 1000),
           min: 0,
         },
       }}

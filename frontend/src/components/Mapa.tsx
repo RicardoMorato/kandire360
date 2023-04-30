@@ -18,6 +18,7 @@ interface ChartData {
 
 function Mapa() {
   const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCityMaxPib, setSelectedCityMaxPib] = useState(0);
   const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
     null
   );
@@ -32,7 +33,6 @@ function Mapa() {
         socket.disconnect();
       } else {
         const cData = data as ChartData;
-        console.log("rebendo...", data);
 
         setChartData((prevState) => {
           const previousDates = prevState.map(
@@ -75,6 +75,7 @@ function Mapa() {
       const formattedData = data.map((cityData) => ({
         value: cityData.codMunicipio,
         label: cityData.nomeMunicipio,
+        maxPib: cityData.maxPib,
       }));
 
       setCitiesData(formattedData);
@@ -87,6 +88,7 @@ function Mapa() {
     resetConnection(value);
     setChartData([]);
 
+    setSelectedCityMaxPib(city.maxPib);
     setSelectedCity(city.label);
   };
 
@@ -714,7 +716,11 @@ function Mapa() {
       )}
 
       {citiesData && selectedCity && (
-        <RealTimeChart cityName={selectedCity} data={chartData} />
+        <RealTimeChart
+          cityName={selectedCity}
+          maxRange={selectedCityMaxPib}
+          data={chartData}
+        />
       )}
     </div>
   );

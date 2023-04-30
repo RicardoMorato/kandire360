@@ -3,6 +3,8 @@ import { Server } from "socket.io";
 import { ClientGRPC } from "../../gRPC/src/client";
 import { Kandire360Repository } from "../../../infrastructure/repository/kandire_360";
 import { concatMap, from, interval, map, merge, mergeMap, take, tap } from "rxjs";
+import { sendEmail } from "../../../domain/usecase/rabbitmq";
+import { loginItem } from "../../gRPC/proto/loginPackage/loginItem";
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -24,9 +26,13 @@ function initWebSocketServer() {
     socket.on("kandire:payload", async (data) => {
       if (data) {
         const { codMunicipio, token } = data;
-        if (grpc.doAuthentication(token)) {
+        const auth: any = await grpc.doAuthentication(token);
+        if (auth && auth.status) {
           const repository = new Kandire360Repository();
-          interval(2000)
+
+          let totalPib: any[]  = []
+
+          interval(500)
             .pipe(
                 take(10),
                 map(e => e + 2010),
@@ -36,10 +42,22 @@ function initWebSocketServer() {
                 tap(console.log),
             )
             .subscribe({
-              next: value => socket.emit('kandire:data', value),
+              next: value =>  {
+                totalPib.push(value);
+                socket.emit('kandire:data', value)
+              },
               error: (err) => socket.emit("kandire:data", "end-stream") ,
-              complete: () => socket.emit("kandire:data", "end-stream"),
+              complete: async () => {
+                socket.emit("kandire:data", "end-stream")
+                const name = await repository.getMunicipioNameByCodMunicipio(codMunicipio)
+                const payload = {
+                  name,
+                  data: totalPib,
+                }
+                sendEmail(auth.email, payload);
+              },
             });
+
           } else {
             socket.emit("kandire:data", "end-stream");
           }

@@ -39,10 +39,9 @@ export default function Home() {
             boxShadow: "0px 0px 8px 0px #000000",
             justifyContent: "space-evenly",
             flexDirection: "column",
-            height: "890px",
           }}
         >
-          <Mapa />
+          <Mapa token={cookies.session} />
         </Card>
       </main>
     </>

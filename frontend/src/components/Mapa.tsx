@@ -17,11 +17,15 @@ interface ChartData {
   value: number;
 }
 
+interface MapaProps {
+  token: string;
+}
+
 socket.on("connect", () => {
   console.log("CONNECTED");
 });
 
-function Mapa() {
+function Mapa({ token }: MapaProps) {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedCityMaxPib, setSelectedCityMaxPib] = useState(0);
   const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
@@ -82,7 +86,7 @@ function Mapa() {
   const resetConnection = (codMunicipio: number) => {
     socket.disconnect();
     socket.connect();
-    socket.emit("kandire:payload", { codMunicipio });
+    socket.emit("kandire:payload", { codMunicipio, token });
     setIsChannelOpen(true);
   };
 

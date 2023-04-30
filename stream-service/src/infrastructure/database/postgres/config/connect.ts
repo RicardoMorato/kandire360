@@ -1,12 +1,12 @@
 import { Sequelize } from 'sequelize'
 
 const sequelize = new Sequelize({
-    username: '',
-    password: '',
+    username: 'postgres',
+    password: '123456',
     port: 5432,
     dialect: 'postgres',
-    database: '',
-    host: ''
+    database: 'kandire360',
+    host: 'vps44635.publiccloud.com.br'
 })
 
 export {

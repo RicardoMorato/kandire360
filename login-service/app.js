@@ -34,13 +34,6 @@ app.post('/register', async (req, res) => {
       return res.status(400).send('Email is not valid');
     }
 
-    const oldUser = await db.getData('/users');
-    const validateEmail = oldUser.filter((e) => e.email === req.body.email)[0];
-
-    if (!(typeof validateEmail === 'undefined')) {
-      return res.status(409).send('User Already Exist. Please Login');
-    }
-
     const token = jwt.sign(
       { email },
       TOKEN_KEY,

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { Kandire360Repository } from '../../infrastructure/repository/kandire_360'
+import { sendEmail } from '../../domain/usecase/rabbitmq';
 
 const ListKandire360Controller = async (req: Request, res: Response) => {
     const repository = new Kandire360Repository()
@@ -41,9 +42,16 @@ const GetMunicipioDashboardByCodMunicipioAndAnoController = async (req: Request,
     return res.send(await repository.getMunicipioByCodMunicipio(codMunicipioParse, 2010))
 }
 
+const sendEmailController = async (req: Request, res: Response) => {
+    const { email, payload } = req.body;
+
+    return res.send(await sendEmail(email, payload))
+}
+
 export {
     ListKandire360Controller,
     ListEstadosController,
     ListMunicipiosByCodeUFController,
-    GetMunicipioDashboardByCodMunicipioAndAnoController
+    GetMunicipioDashboardByCodMunicipioAndAnoController,
+    sendEmailController,
 }

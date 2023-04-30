@@ -62,6 +62,18 @@ class Kandire360Repository {
         return data ? transformer.toMunicipioDashboard(data) : null
     }
 
+    async getMunicipioNameByCodMunicipio(codMunicipio: number): Promise<MunicipioDashboardEntity> {
+        const data:any = await kandire360ModelSequelize.findOne({
+            attributes: [
+                ['nome_municipio', 'nome_municipio'],
+            ], where: {
+                cod_municipio: codMunicipio
+            }
+        })
+
+        return data ? data.nome_municipio : null
+    }
+
 }
 
 export {

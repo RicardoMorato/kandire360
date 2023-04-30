@@ -2,7 +2,7 @@ import { loadPackageDefinition, credentials } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import { ProtoGrpcType } from '../proto/login';
 import { loginItem } from '../proto/loginPackage/loginItem';
-import path from 'path';
+import path, { resolve } from 'path';
 
 const port = '4000'
 const host = `0.0.0.0:${port}`;
@@ -23,11 +23,17 @@ class ClientGRPC {
     console.log(`gRPC Client on ${port}`)
   }
 
-  doAuthentication(token: string) {
-    return this.client.authenticate({
-      token
-    }, (err: any, response: loginItem) => {
-      return response.status;
+  async doAuthentication(token: string) {
+    return new Promise((resolve, reject) => {
+      this.client.authenticate({
+        token
+      }, (err: any, response: loginItem) => {
+        console.log(response)
+        resolve(response);
+        if(err){
+          reject(response);
+        }
+      });
     });
   }
 

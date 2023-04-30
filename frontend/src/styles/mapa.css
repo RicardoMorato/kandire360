@@ -19,12 +19,17 @@ $red: #F7254C;
 	display: none;
 }
 
+div.ant-select {
+	display: flex;
+	justify-content: center;
+}
+
 .ant-select-arrow {
 	display: none !important;
 }
 
 .ant-select-selector {
-	width: 300px !important;
+	width: 75% !important;
 	margin-top: 64px !important;
 }
 
@@ -37,7 +42,6 @@ $red: #F7254C;
 	position: relative;
   z-index: 1;
   float: left;
-	padding: 20px 0 0 15px;
 }
 #map {
 	transform: scale(1);
@@ -52,7 +56,7 @@ $red: #F7254C;
 .move-map {
 	width: 100% !important;
 	display: grid !important;
-	grid-template-columns: repeat(3, 1fr) !important;
+	grid-template-columns: 0.5fr 0.75fr 1.75fr;
 }
 #map .state {
     cursor: pointer;

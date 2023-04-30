@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { Select } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { Select, notification } from "antd";
+import { NotificationInstance } from "antd/es/notification/interface";
 import { io } from "socket.io-client";
 
 import { initMap, getCodUF } from "@/utils";
@@ -16,6 +17,10 @@ interface ChartData {
   value: number;
 }
 
+socket.on("connect", () => {
+  console.log("CONNECTED");
+});
+
 function Mapa() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedCityMaxPib, setSelectedCityMaxPib] = useState(0);
@@ -23,45 +28,62 @@ function Mapa() {
     null
   );
   const [chartData, setChartData] = useState([] as ChartData[]);
+  const [isChannelOpen, setIsChannelOpen] = useState(true);
+  const [api, contextHolder] = notification.useNotification();
 
-  socket.on("connect", () => {
-    console.log("CONNECTED");
+  socket.on("disconnect", () => {
+    console.log("DISCONNECTED");
+    setIsChannelOpen(false);
+  });
 
-    socket.on("kandire:data", (data: ChartData | string) => {
-      if (typeof data === "string" && data === "end-stream") {
-        console.log("fechando conexao");
-        socket.disconnect();
-      } else {
-        const cData = data as ChartData;
-
-        setChartData((prevState) => {
-          const previousDates = prevState.map(
-            (state) => state.time
-          ) as string[];
-
-          const foundDate = previousDates.find((date) => date === cData.time);
-
-          if (!foundDate) {
-            return [
-              ...prevState,
-              {
-                time: cData.time,
-                value: cData.value,
-              },
-            ];
-          }
-
-          return [...prevState];
-        });
-      }
+  const openNotification = useCallback(() => {
+    api["info"]({
+      message: "Relatório enviado por e-mail",
+      description:
+        "Um relatório dos dados abaixo foi enviado para o seu e-mail, obrigado por usar o Kandire 360.",
+      duration: 5,
+      style: {
+        width: 600,
+      },
     });
+  }, [api]);
+
+  useEffect(() => {
+    if (!isChannelOpen) openNotification();
+  }, [openNotification, isChannelOpen]);
+
+  socket.on("kandire:data", (data: ChartData | string) => {
+    if (typeof data === "string" && data === "end-stream") {
+      console.log("fechando conexao");
+      socket.disconnect();
+    } else {
+      const cData = data as ChartData;
+
+      setChartData((prevState) => {
+        const previousDates = prevState.map((state) => state.time) as string[];
+
+        const foundDate = previousDates.find((date) => date === cData.time);
+
+        if (!foundDate) {
+          return [
+            ...prevState,
+            {
+              time: cData.time,
+              value: cData.value,
+            },
+          ];
+        }
+
+        return [...prevState];
+      });
+    }
   });
 
   const resetConnection = (codMunicipio: number) => {
     socket.disconnect();
     socket.connect();
-
     socket.emit("kandire:payload", { codMunicipio });
+    setIsChannelOpen(true);
   };
 
   const fetchData = async (state: string) => {
@@ -722,6 +744,8 @@ function Mapa() {
           data={chartData}
         />
       )}
+
+      {contextHolder}
     </div>
   );
 }

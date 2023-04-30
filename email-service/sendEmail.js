@@ -1,18 +1,17 @@
 const sgMail = require('@sendgrid/mail');
 
-sgMail.setApiKey();
+sgMail.setApiKey('<API_KEY>');
 
 function sendEmail(email, payload) {
 
-    let html;
+    let html = "";
 
-    html += `<h1>${payload.name}</h1>`;
-    html += "<table>";
+    html += "<table style='border: solid 1px #000'>";
     html += "<tr>";
     html += "<th>Ano</th>";
     html += "<th>PIB</th>";
     html += "</tr>";
-    for(var i = 0; i< payload.data.lenth; i++){
+    for(var i = 0; i < payload.data.length; i++){
         const d = new Date(payload.data[i].time);
         let year = d.getFullYear();
         html += "<tr>";
@@ -22,12 +21,12 @@ function sendEmail(email, payload) {
     }
     html += "</table>";
 
+
     const msg = {
         to: email,
-        from: 'kandire360@gmail.com',
+        from: 'viturianooliveira@gmail.com',
         subject: 'Relatório de Kandire 360',
-        text: 'asdasdwq',
-        html,
+        html: html,
     }
 
     sgMail.send(msg)

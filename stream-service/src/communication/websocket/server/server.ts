@@ -32,7 +32,7 @@ function initWebSocketServer() {
 
           let totalPib: any[]  = []
 
-          interval(500)
+          interval(2000)
             .pipe(
                 take(10),
                 map(e => e + 2010),
@@ -49,9 +49,7 @@ function initWebSocketServer() {
               error: (err) => socket.emit("kandire:data", "end-stream") ,
               complete: async () => {
                 socket.emit("kandire:data", "end-stream")
-                const name = await repository.getMunicipioNameByCodMunicipio(codMunicipio)
                 const payload = {
-                  name,
                   data: totalPib,
                 }
                 sendEmail(auth.email, payload);

@@ -3,7 +3,8 @@ import { loadSync } from '@grpc/proto-loader';
 import { ProtoGrpcType } from '../proto/login';
 import path from 'path';
 
-const host = '0.0.0.0:4000';
+const port = '4000'
+const host = `0.0.0.0:${port}`;
 const packageDefinition = loadSync(path.resolve(__dirname, '../proto/login.proto'));
 const proto = loadPackageDefinition(
   packageDefinition
@@ -17,6 +18,8 @@ class ClientGRPC {
       host,
       credentials.createInsecure()
     );
+
+    console.log(`gRPC Client on ${port}`)
   }
 
   doAuthentication(token: string) {

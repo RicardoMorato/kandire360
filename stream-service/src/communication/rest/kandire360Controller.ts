@@ -26,7 +26,7 @@ const ListMunicipiosByCodeUFController = async (req: Request, res: Response) => 
     return res.send(await repository.listMunicipiosByCodeUF(codParse))
 }
 
-const GetMunicipioDashboardByCodMunicipioAndAno = async (req: Request, res: Response) => {
+const GetMunicipioDashboardByCodMunicipioAndAnoController = async (req: Request, res: Response) => {
     const repository = new Kandire360Repository()
 
     const { codMunicipio, ano } = req.query
@@ -46,5 +46,5 @@ export {
     ListKandire360Controller,
     ListEstadosController,
     ListMunicipiosByCodeUFController,
-    GetMunicipioDashboardByCodMunicipioAndAno
+    GetMunicipioDashboardByCodMunicipioAndAnoController
 }

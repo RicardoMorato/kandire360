@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { ClientGRPC } from '../../gRPC/src/client';
+import { Kandire360Repository } from "../../../infrastructure/repository/kandire_360";s
 
 const io = new Server();
 
@@ -17,14 +18,20 @@ function initWebSocketServer() {
     io.on("connection", (socket) => {
         console.log(`socket ${socket.id} connected`)
 
-        // send an event to the client
-        socket.emit("foo", "bar")
+        socket.on("kandire:payload", async (data) => {
+            if (data) {
+                const { codMunicipio, ano } = data
+                const repository = new Kandire360Repository()
+                const response = await repository.getMunicipioByCodMunicipio(codMunicipio, ano)
 
-        socket.on("foobar", () => {
-            // an event was received from the client
+                if (response) {
+                    socket.emit("kandxire:data", response)
+                } else {
+                    socket.emit("kandire:data", 'end-stream')
+                }
+            }
         })
 
-        // upon disconnection
         socket.on("disconnect", (reason) => {
             console.log(`socket ${socket.id} disconnected due to ${reason}`);
         })

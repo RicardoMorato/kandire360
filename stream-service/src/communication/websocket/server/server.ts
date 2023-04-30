@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { ClientGRPC } from '../../gRPC/src/client';
-import { Kandire360Repository } from "../../../infrastructure/repository/kandire_360";s
+import { Kandire360Repository } from "../../../infrastructure/repository/kandire_360";
 
 const io = new Server();
 

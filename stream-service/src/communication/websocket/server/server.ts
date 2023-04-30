@@ -17,32 +17,32 @@ function timeIntervalAwait(ms: number) {
 function initWebSocketServer() {
     console.log(`Websocket Server on ${PORT}`)
 
-    /************ EXEMPLO **********************/
     const grpc = new ClientGRPC();
-    grpc.doAuthentication('');
-    grpc.doLogin('');
-    /************ EXEMPLO **********************/
 
     io.on("connection", (socket) => {
         console.log(`socket ${socket.id} connected`)
 
         socket.on("kandire:payload", async (data) => {
             if (data) {
-                const { codMunicipio } = data
-                const repository = new Kandire360Repository()
-                let initial = 2010
-                const response: any = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
-                socket.emit('kandire:data', response)
-                if (response) {
-                    const maxLoop = 10
-                    for (let index = 0; index < maxLoop; index++) {
-                        await timeIntervalAwait(5000)
-                        initial++
-                        const resp = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
-                        socket.emit('kandire:data', resp)
-                    }
+                const { codMunicipio, token } = data
+                if(grpc.doAuthentication(token)){
+                    const repository = new Kandire360Repository()
+                    let initial = 2010
+                    const response: any = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
+                    socket.emit('kandire:data', response)
+                    if (response) {
+                        const maxLoop = 10
+                        for (let index = 0; index < maxLoop; index++) {
+                            await timeIntervalAwait(5000)
+                            initial++
+                            const resp = await repository.getMunicipioByCodMunicipio(codMunicipio, initial)
+                            socket.emit('kandire:data', resp)
+                        }
 
-                    socket.emit("kandire:data", 'end-stream')
+                        socket.emit("kandire:data", 'end-stream')
+                    } else {
+                        socket.emit("kandire:data", 'end-stream')
+                    }
                 } else {
                     socket.emit("kandire:data", 'end-stream')
                 }

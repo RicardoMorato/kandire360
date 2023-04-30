@@ -1,6 +1,7 @@
 import { loadPackageDefinition, credentials } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import { ProtoGrpcType } from '../proto/login';
+import { loginItem } from '../proto/loginPackage/loginItem';
 import path from 'path';
 
 const port = '4000'
@@ -23,18 +24,18 @@ class ClientGRPC {
   }
 
   doAuthentication(token: string) {
-    this.client.authenticate({
+    return this.client.authenticate({
       token
-    }, (err: any, response: any) => {
-      console.log(response)
+    }, (err: any, response: loginItem) => {
+      return response.status;
     });
   }
 
   doLogin(email: string) {
-    this.client.login({
+    return this.client.login({
       email
-    }, (err: any, response: any) => {
-      console.log(response)
+    }, (err: any, response: loginItem) => {
+      return response.token;
     });
   }
 }

@@ -25,6 +25,7 @@ $red: #F7254C;
 
 .ant-select-selector {
 	width: 300px !important;
+	margin-top: 64px !important;
 }
 
 #map p {

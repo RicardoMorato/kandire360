@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
 import { useCookies } from "react-cookie";
+import { Card } from "antd";
 import styles from "@/styles/Home.module.css";
 import Mapa from "@/components/Mapa";
 
@@ -28,7 +29,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
-        <Mapa />
+        <Card
+          title="PIBs do Brasil"
+          bordered={false}
+          style={{
+            width: "100%",
+            padding: "32px",
+            display: "flex",
+            boxShadow: "0px 0px 8px 0px #000000",
+            justifyContent: "space-evenly",
+            flexDirection: "column",
+            height: "890px",
+          }}
+        >
+          <Mapa />
+        </Card>
       </main>
     </>
   );

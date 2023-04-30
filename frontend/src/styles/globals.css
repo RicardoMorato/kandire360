@@ -109,3 +109,15 @@ a {
     color-scheme: dark;
   }
 }
+
+.ant-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-card-head-title {
+  height: 100px;
+  font-size: 40px;
+  margin-left: 18px;
+}

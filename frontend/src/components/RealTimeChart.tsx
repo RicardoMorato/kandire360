@@ -29,8 +29,10 @@ function RealTimeChart({ cityName = "", data, maxRange }: RealTimeChartProps) {
         {
           name: "PIB",
           data: data.map((data) =>
-            data.value > 2_000_000
+            maxRange >= 10_000_000
               ? Math.round(data.value / 1_000_000)
+              : maxRange > 2_000_000
+              ? Number((data.value / 1_000_000).toFixed(1))
               : Math.round(data.value / 1000)
           ),
         },
@@ -76,8 +78,10 @@ function RealTimeChart({ cityName = "", data, maxRange }: RealTimeChartProps) {
         },
         yaxis: {
           max:
-            maxRange > 2_000_000
+            maxRange >= 10_000_000
               ? Math.round(maxRange / 1_000_000)
+              : maxRange > 2_000_000
+              ? Number((maxRange / 1_000_000).toFixed(1))
               : Math.round(maxRange / 1000),
           min: 0,
         },

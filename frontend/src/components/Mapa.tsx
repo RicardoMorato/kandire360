@@ -1,15 +1,68 @@
 import { useEffect, useState } from "react";
 import { Select } from "antd";
+import { io } from "socket.io-client";
 
 import { initMap, getCodUF } from "@/utils";
 import { AntdSelectOptions, CityData } from "@/types/cities";
 import RealTimeChart from "@/components/RealTimeChart";
+
+const socket = io("http://localhost:3333/", {
+  reconnectionAttempts: 2,
+  autoConnect: false,
+});
+
+interface ChartData {
+  time: Date | string;
+  value: number;
+}
 
 function Mapa() {
   const [selectedCity, setSelectedCity] = useState("");
   const [citiesData, setCitiesData] = useState<null | AntdSelectOptions[]>(
     null
   );
+  const [chartData, setChartData] = useState([] as ChartData[]);
+
+  socket.on("connect", () => {
+    console.log("CONNECTED");
+
+    socket.on("kandire:data", (data: ChartData | string) => {
+      if (typeof data === "string" && data === "end-stream") {
+        console.log("fechando conexao");
+        socket.disconnect();
+      } else {
+        const cData = data as ChartData;
+        console.log("rebendo...", data);
+
+        setChartData((prevState) => {
+          const previousDates = prevState.map(
+            (state) => state.time
+          ) as string[];
+
+          const foundDate = previousDates.find((date) => date === cData.time);
+
+          if (!foundDate) {
+            return [
+              ...prevState,
+              {
+                time: cData.time,
+                value: cData.value,
+              },
+            ];
+          }
+
+          return [...prevState];
+        });
+      }
+    });
+  });
+
+  const resetConnection = (codMunicipio: number) => {
+    socket.disconnect();
+    socket.connect();
+
+    socket.emit("kandire:payload", { codMunicipio });
+  };
 
   const fetchData = async (state: string) => {
     try {
@@ -31,6 +84,9 @@ function Mapa() {
   };
 
   const onChange = (value: number, city: AntdSelectOptions) => {
+    resetConnection(value);
+    setChartData([]);
+
     setSelectedCity(city.label);
   };
 
@@ -657,7 +713,9 @@ function Mapa() {
         />
       )}
 
-      {citiesData && selectedCity && <RealTimeChart cityName={selectedCity} />}
+      {citiesData && selectedCity && (
+        <RealTimeChart cityName={selectedCity} data={chartData} />
+      )}
     </div>
   );
 }

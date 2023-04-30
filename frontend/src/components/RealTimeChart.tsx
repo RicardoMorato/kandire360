@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { io } from "socket.io-client";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
+
+// const socket = io("http://localhost:3333/", { reconnectionAttempts: 2 });
 
 interface ChartData {
   time: Date | string;
@@ -12,44 +15,10 @@ interface ChartData {
 
 interface RealTimeChartProps {
   cityName: string;
+  data: ChartData[];
 }
 
-let today = new Date();
-
-function RealTimeChart({ cityName = "" }: RealTimeChartProps) {
-  const [chartData, setChartData] = useState([] as ChartData[]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const nextDay = new Date(today.setDate(today.getDate() + 1));
-
-      const formattedDate = `
-                ${nextDay.getFullYear()}
-                -
-                ${
-                  nextDay.getMonth() + 1 >= 10
-                    ? nextDay.getMonth() + 1
-                    : `0${nextDay.getMonth() + 1}`
-                }
-                -
-                ${
-                  nextDay.getDate() >= 10
-                    ? nextDay.getDate()
-                    : `0${nextDay.getDate()}`
-                }
-            `.replace(/\s/g, ""); // To remove any white spaces
-
-      setChartData((prevState) => [
-        ...prevState,
-        {
-          time: formattedDate,
-          value: Math.floor(Math.random() * 100),
-        },
-      ]);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [cityName]);
-
+function RealTimeChart({ cityName = "", data }: RealTimeChartProps) {
   return (
     <ReactApexChart
       type="line"
@@ -58,7 +27,7 @@ function RealTimeChart({ cityName = "" }: RealTimeChartProps) {
       series={[
         {
           name: "PIB",
-          data: chartData.map((data) => data.value),
+          data: data.map((data) => data.value),
         },
       ]}
       options={{
@@ -89,10 +58,10 @@ function RealTimeChart({ cityName = "" }: RealTimeChartProps) {
           size: 0,
         },
         xaxis: {
-          categories: chartData.map((data) => data.time.toString()),
+          categories: data.map((data) => data.time.toString()),
         },
         yaxis: {
-          max: 100,
+          max: 1000,
           min: 0,
         },
       }}

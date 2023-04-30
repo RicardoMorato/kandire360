@@ -2,6 +2,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { ClientGRPC } from "../../gRPC/src/client";
 import { Kandire360Repository } from "../../../infrastructure/repository/kandire_360";
+import { concatMap, from, interval, map, merge, mergeMap, take, tap } from "rxjs";
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -11,14 +12,6 @@ const io = new Server(httpServer, {
 });
 
 const PORT = 3333;
-
-function timeIntervalAwait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      resolve(0);
-    }, ms);
-  });
-}
 
 function initWebSocketServer() {
   console.log(`Websocket Server on ${PORT}`);
@@ -33,32 +26,26 @@ function initWebSocketServer() {
         const { codMunicipio, token } = data;
         if (grpc.doAuthentication(token)) {
           const repository = new Kandire360Repository();
-          let initial = 2010;
-          const response: any = await repository.getMunicipioByCodMunicipio(
-            codMunicipio,
-            initial
-          );
-          socket.emit("kandire:data", response);
-          if (response) {
-            const maxLoop = 10;
-            for (let index = 0; index < maxLoop; index++) {
-              await timeIntervalAwait(5000);
-              initial++;
-              const resp = await repository.getMunicipioByCodMunicipio(
-                codMunicipio,
-                initial
-              );
-              socket.emit("kandire:data", resp);
-            }
-
-            socket.emit("kandire:data", "end-stream");
+          interval(2000)
+            .pipe(
+                take(10),
+                map(e => e + 2010),
+                mergeMap((year) =>
+                  from(repository.getMunicipioByCodMunicipio(codMunicipio, year))
+                ),
+                tap(console.log),
+            )
+            .subscribe({
+              next: value => socket.emit('kandire:data', value),
+              error: (err) => socket.emit("kandire:data", "end-stream") ,
+              complete: () => socket.emit("kandire:data", "end-stream"),
+            });
           } else {
             socket.emit("kandire:data", "end-stream");
           }
         } else {
           socket.emit("kandire:data", "end-stream");
         }
-      }
     });
 
     socket.on("disconnect", (reason) => {

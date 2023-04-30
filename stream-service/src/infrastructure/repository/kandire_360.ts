@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { Kandire360Entity, MunicipioEntity, EstadoEntity } from '../../domain/entity/kandire_360'
+import { Kandire360Entity, MunicipioEntity, EstadoEntity, MunicipioDashboardEntity } from '../../domain/entity/kandire_360'
 import { Kandire360Model, kandire360ModelSequelize } from '../database/postgres/model/kandire_360'
 import { Kandire360Transformer } from '../database/postgres/transformer/kandire360'
 
@@ -31,7 +31,7 @@ class Kandire360Repository {
         return data ? data.map((el: any) => transformer.toEstadoEntity(el)) : []
     }
 
-    async listMunicipios(codeUF: number): Promise<MunicipioEntity[]> {
+    async listMunicipiosByCodeUF(codeUF: number): Promise<MunicipioEntity[]> {
         const transformer = new Kandire360Transformer()
         const data = await kandire360ModelSequelize.findAll({
             attributes: [
@@ -48,6 +48,22 @@ class Kandire360Repository {
 
         return data ? data.map((el: any) => transformer.toMunicipioEntity(el)): []
     }
+
+    async getMunicipioByCodMunicipio(codMunicipio: number, ano: number): Promise<MunicipioDashboardEntity> {
+        const transformer = new Kandire360Transformer()
+        const data = await kandire360ModelSequelize.findOne({
+            attributes: [
+                ['ano', 'ano'],
+                ['pib', 'pib']
+            ], where: {
+                ano,
+                cod_municipio: codMunicipio
+            }
+        })
+
+        return data ? transformer.toMunicipioDashboard(data): null
+    }
+
 }
 
 export {

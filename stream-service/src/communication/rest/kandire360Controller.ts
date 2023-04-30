@@ -13,20 +13,38 @@ const ListEstadosController = async (req: Request, res: Response) => {
     return res.send(await repository.listEstados())
 }
 
-const listMunicipiosController = async (req: Request, res:Response) => {
+const ListMunicipiosByCodeUFController = async (req: Request, res: Response) => {
     const repository = new Kandire360Repository()
     const { codUF } = req.query
+
     let codParse = 0
+
     if (typeof codUF === 'string') {
         codParse = codUF ? parseInt(codUF, 10) : 1
     }
 
-    return res.send(await repository.listMunicipios(codParse))
+    return res.send(await repository.listMunicipiosByCodeUF(codParse))
 }
 
+const GetMunicipioDashboardByCodMunicipioAndAno = async (req: Request, res: Response) => {
+    const repository = new Kandire360Repository()
+
+    const { codMunicipio, ano } = req.query
+
+    let codMunicipioParse = 0
+    let anoParse = 0
+
+    if (typeof codMunicipio === 'string' && typeof ano === 'string') {
+        codMunicipioParse = parseInt(codMunicipio, 10)
+        anoParse = parseInt(ano, 10)
+    }
+
+    return res.send(await repository.getMunicipioByCodMunicipio(codMunicipioParse, anoParse))
+}
 
 export {
     ListKandire360Controller,
     ListEstadosController,
-    listMunicipiosController
+    ListMunicipiosByCodeUFController,
+    GetMunicipioDashboardByCodMunicipioAndAno
 }

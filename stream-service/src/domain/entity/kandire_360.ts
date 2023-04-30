@@ -133,8 +133,19 @@ class MunicipioEntity {
     }
 }
 
+class MunicipioDashboardEntity {
+    public time: Date | string
+    public value: number
+
+    constructor(time: Date | string, value: number) {
+        this.time = time
+        this.value = value
+    }
+}
+
 export {
     Kandire360Entity,
     EstadoEntity,
-    MunicipioEntity
+    MunicipioEntity,
+    MunicipioDashboardEntity
 }

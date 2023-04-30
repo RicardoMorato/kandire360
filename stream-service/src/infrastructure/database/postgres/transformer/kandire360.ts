@@ -1,4 +1,4 @@
-import { Kandire360Entity, MunicipioEntity, EstadoEntity } from '../../../../domain/entity/kandire_360'
+import { Kandire360Entity, MunicipioEntity, EstadoEntity, MunicipioDashboardEntity } from '../../../../domain/entity/kandire_360'
 import { Kandire360Model } from '../model/kandire_360'
 
 class Kandire360Transformer {
@@ -33,6 +33,43 @@ class Kandire360Transformer {
         const { cod_municipio, nome_municipio } = row.dataValues
 
         return new MunicipioEntity(cod_municipio, nome_municipio)
+    }
+
+    formatedMinVlaue(value: number) {
+        if (value < 10) return '0' + value
+
+        return value
+    }
+
+    toMunicipioDashboard(row: any): any {
+        const { ano, pib } = row.dataValues
+
+        const map = {
+            mm: () => {
+                const mm = Math.floor((Math.random() * 12) + 1)
+
+                return this.formatedMinVlaue(mm)
+            },
+            dd: () => {
+                const dd = Math.floor((Math.random() * 30) + 1)
+
+                return this.formatedMinVlaue(dd)
+            },
+            aaaa: ano,
+            hh: () => {
+                const hh = Math.floor((Math.random() * 24) + 1)
+
+                return this.formatedMinVlaue(hh)
+            },
+            m: () => {
+                const m = Math.floor((Math.random() * 60) + 0)
+
+                return this.formatedMinVlaue(m)
+            }
+        }
+        const formatDate = `${map.dd()}/${map.mm()}/${map.aaaa} ${map.hh()}:${map.m()}`
+
+        return new MunicipioDashboardEntity(formatDate, pib)
     }
 }
 

@@ -338,7 +338,7 @@ const kandire360ModelSequelize = sequelize.define('Kandire360Model',{
     },
 }, {
     schema: 'register',
-    tableName: 'pib_municipios',
+    tableName: 'pib_municipos_tb',
     timestamps: false,
     freezeTableName: true,
     underscored: true,

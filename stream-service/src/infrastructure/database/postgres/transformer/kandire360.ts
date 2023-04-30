@@ -32,7 +32,7 @@ class Kandire360Transformer {
     toMunicipioEntity(row: any): MunicipioEntity {
         const { cod_municipio, nome_municipio, maxPib } = row.dataValues
 
-        const pibMil = maxPib * 1000
+        const pibMil = maxPib * 1000000
         const pibParsed = pibMil.toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})
 
         return new MunicipioEntity(cod_municipio, nome_municipio, pibParsed)
@@ -71,9 +71,7 @@ class Kandire360Transformer {
             }
         }
         const formatDate = `${map.aaaa}/${map.mm()}/${map.dd()}`
-        const pibMil = pib * 1000
-        const pibParsed = pibMil.toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})
-        return new MunicipioDashboardEntity(formatDate, pibParsed)
+        return new MunicipioDashboardEntity(formatDate, Number(pib.replaceAll('.', '')))
     }
 }
 

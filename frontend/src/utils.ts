@@ -77,7 +77,7 @@ const initMap = (fetchStateData: Function, reloadState: Function) => {
 };
 
 const getCodUF = (nomeUF: string): number => {
-  const ufCods = {
+  const ufCods: {[index: string]: number} = {
     AC: 12,
     AL: 27,
     AP: 16,
@@ -111,8 +111,8 @@ const getCodUF = (nomeUF: string): number => {
   else return ufCods["PE"];
 };
 
-const messageHandler = (io, socket) => {
-  const createdMessage = (msg) => {
+const messageHandler = (io: any, socket: any) => {
+  const createdMessage = (msg: string) => {
     socket.broadcast.emit("newIncomingMessage", msg);
   };
 

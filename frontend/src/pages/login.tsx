@@ -52,9 +52,12 @@ export default function Login() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                const data = new FormData(e.target);
+
+
+                
+                const data = new FormData(e.currentTarget);
                 const [[, email]] = [...data.entries()];
-                handleSubmit(email);
+                handleSubmit(email as string);
               }}
               className={`${styles.form}`}
             >

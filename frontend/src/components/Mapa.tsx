@@ -110,12 +110,17 @@ function Mapa({ token }: MapaProps) {
     }
   };
 
-  const onChange = (value: number, city: AntdSelectOptions) => {
+  const onChange = (value: number, city: AntdSelectOptions | AntdSelectOptions[]) => {
     resetConnection(value);
     setChartData([]);
 
-    setSelectedCityMaxPib(city.maxPib);
-    setSelectedCity(city.label);
+    if (Array.isArray(city)) {
+      setSelectedCityMaxPib(city[0].maxPib);
+      setSelectedCity(city[0].label);
+    } else {
+      setSelectedCityMaxPib(city.maxPib);
+      setSelectedCity(city.label);
+    }
   };
 
   const resetStates = () => {
